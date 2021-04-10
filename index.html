@@ -6,7 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="theme-color" content="#1e1e1e">
-	<meta name="description" content="A snake game.">
+	<meta name="description" content="Good old minesweeper.">
 	<title>Minesweeper</title>
 	<link rel="shortcut icon" type="image/x-icon" href="./img/favicon.ico">
 	<link rel="stylesheet" href="./css/style.css">
@@ -16,40 +16,45 @@
 <body>
 	<div class="wrapper">
 		<div class="game">
+			<h1 class="game__title">Minesweeper</h1>
 			<div class="game__board">
-				<button class="game__tile">
-					1
-				</button>
-				<button class="game__tile">
-					1
-				</button>
-				<button class="game__tile">
-					1
-				</button>
-				<button class="game__tile">
-					5
-				</button>
-				<button class="game__tile">
-					1
-				</button>
-				<button class="game__tile">
-					1
-				</button>
-				<button class="game__tile">
-					1
-				</button>
-				<button class="game__tile">
-					5
-				</button>
-				<button class="game__tile">
-					5
-				</button>
 			</div>
 		</div>
 	</div>
 	<div class="layout">
-		<div class="mines-count">0</div>
-		<div class="mode">CHANGE MODE</div>
+		<div class="diff popup hidden">
+			<div class="popup__container">
+				<div class="popup__body">
+					<h2 class="popup__title">Select difficulty</h2>
+					<button class="btn popup__btn" data-difficulty="easy">Easy</button>
+					<button class="btn popup__btn" data-difficulty="normal">Normal</button>
+					<button class="btn popup__btn" data-difficulty="hard">Hard</button>
+				</div>
+			</div>
+		</div>
+		<div class="mines-count">
+			<div class="mines-count__container">
+				<div class="mines-count__row">
+					<span class="mines-count__count">0</span>
+					<img src="img/mine.png" alt="mine count">
+				</div>
+			</div>
+		</div>
+		<div class="mode">
+			<div class="mode__container">
+				<button class="mode__btn _flag">
+					<div class="mode__img-layout bg _c"></div>
+				</button>
+			</div>
+		</div>
+		<div class="victory-screen popup hidden">
+			<div class="popup__container">
+				<div class="popup__body">
+					<h2 class="popup__title">Victory!</h2>
+					<button class="btn popup__btn" data-restart>Restart</button>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 
