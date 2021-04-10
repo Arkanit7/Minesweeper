@@ -1,192 +1,251 @@
 "use strict";
-const nodeField = document.querySelector(".game__board");
-const modeSwitchNode = document.querySelector(".mode");
-const minesCountNode = document.querySelector(".mines-count");
+
+class SoundController {
+  constructor() {
+    this.boomSound = new Audio("./sounds/boom.wav");
+    this.boomSound.volume = 1;
+    this.bgMusic = new Audio("./sounds/main.mp3");
+    this.bgMusic.volume = 0.5;
+    this.bgMusic.loop = true;
+  }
+  startMusic() {
+    this.bgMusic.play();
+  }
+  stopMusic() {
+    this.bgMusic.pause();
+    this.bgMusic.currentTime = 0;
+  }
+  boom() {
+    this.boomSound.play();
+  }
+}
 
 class Minesweeper {
-  constructor(dificulty) {
-    this.dificulty = dificulty;
-    this.dimensions = this.calculateSize();
-    this.nodeField = nodeField;
-    this.mode = "mines" || "flags";
+  constructor(dev) {
+    this.development = dev ? true : false;
+    this.sound = new SoundController();
+    this.nodeField = document.querySelector(".game__board");
+    this.modeButtonNode = document.querySelector(".mode__btn");
+    this.minesCountNode = document.querySelector(".mines-count .count");
+    this.difficultyNode = document.querySelector(".diff");
+    this.difficultyBtnNodes = document.querySelectorAll("[data-difficulty]");
+    this.minesCountNode = document.querySelector(".mines-count__count");
+		this.victoryNode = document.querySelector(".victory-screen");
+		this.restartBtn = document.querySelector("[data-restart]");
+    this.listenToModeSwitcher();
+    this.listenToDifficultyBtns();
+		this.listenToRestartBtn();
+
+    this.development && console.log(`[dev] Initialized.`);
   }
 
-  calculateSize() {
-    if (isNaN(this.dificulty)) {
-      switch (this.dificulty) {
-        case "easy":
-          return [6, 4];
-        case "nornal":
-          return [8, 6];
-        case "hard":
-          return [12, 10];
-        default:
-          return [8, 6];
-      }
-    }
-    return [Math.floor(this.dificulty * 1.2), this.dificulty];
-  }
+  listenToModeSwitcher() {
+    this.mode = "mines";
+    this.modeButtonNode.addEventListener("click", () => {
+      this.mode = this.mode === "mines" ? "flags" : "mines";
+      this.modeButtonNode.classList.toggle("_flag");
 
-  startGame() {
-    this.createModeSwitch();
-    this.clearFiled();
-    this.createPleceholderField();
-    this.byClickGenerateField();
-    this.listenToAllTiels();
-  }
-
-  createModeSwitch() {
-    modeSwitchNode.addEventListener("click", () => {
-      this.mode = this.mode === "flags" ? "mines" : "flags";
+      this.development && console.log(`[dev] Mode switched: ${this.mode}!`);
     });
   }
 
-  clearFiled() {
-    this.nodeField.innerHTML = "";
+  newGame() {
+    this.clearAll();
+    this.toggleDifficultyWindow();
   }
 
-  createPleceholderField() {
-    this.setProperCss();
-
-    const size = this.dimensions.reduce((total, value) => total * value);
-    for (let i = 0; i < size; i++) {
-      const tile = document.createElement("button");
-      tile.classList.add("game__tile");
-      tile.dataset.tileNumber = i;
-      this.nodeField.appendChild(tile);
-    }
+  startGame() {
+    this.toggleDifficultyWindow();
+    this.generateField();
+    this.generateVirtualField();
+    //listen to all tiles and reveal them + reveal all bounded empty tiles
+    //win or lose the game
+    //show win/lose screen and ask for restart
   }
 
-  setProperCss() {
-    this.nodeField.style.gridTemplateColumns = `repeat(${this.dimensions[1]},3rem)`;
-    this.nodeField.style.gridTemplateRows = `repeat(${this.dimensions[0]},3rem)`;
+  toggleDifficultyWindow() {
+    this.difficultyNode.classList.toggle("hidden");
   }
 
-  byClickGenerateField() {
-    const generateField = () => {
-      this.generateField();
-      this.nodeField.removeEventListener("click", generateField);
-    };
-    this.nodeField.addEventListener("click", generateField);
-  }
+  listenToDifficultyBtns() {
+    this.difficultyBtnNodes.forEach((btn) => {
+      btn.addEventListener("click", ({ target }) => {
+        this.difficulty = target.dataset.difficulty;
 
-  changeAndShowPlayerMines(number) {
-    this.playerMines = number;
-    minesCountNode.innerText = this.playerMines;
-  }
+        this.development &&
+          console.log(`[dev] Difficulty switched: ${this.difficulty}!`);
 
-  generateField() {
-    const straightVirtualField = [
-      ...new Array(this.dimensions[0]).fill(true),
-      ...new Array(this.dimensions[0] * (this.dimensions[1] - 1)).fill(null),
-    ];
-
-    this.totalMines = this.dimensions[0];
-    this.changeAndShowPlayerMines(this.totalMines);
-
-    for (let i = straightVirtualField.length - 1; i > 0; i--) {
-      const j = Math.round(Math.random() * i);
-      [straightVirtualField[i], straightVirtualField[j]] = [
-        straightVirtualField[j],
-        straightVirtualField[i],
-      ];
-    }
-
-    const convertFieldtoMatrix = (array) => {
-      let converted = [];
-      for (let i = 0; i < this.dimensions[0]; i++) {
-        converted = [
-          ...converted,
-          array.slice(i * this.dimensions[1], (i + 1) * this.dimensions[1]),
-        ];
-      }
-      return converted;
-    };
-
-    const convertMatrixToArray = (matrix) => {
-      let converted = [];
-      matrix.forEach((array) => (converted = converted.concat(array)));
-      return converted;
-    };
-
-    this.virtualField = convertFieldtoMatrix(straightVirtualField);
-    this.countBombs(this.virtualField);
-    this.straightVirtualField = convertMatrixToArray(this.virtualField);
-    console.log(this.straightVirtualField);
-  }
-
-  countBombs(matrix) {
-    matrix.forEach((array, i) =>
-      array.forEach((val, j) => this.countBombsByTile(val, i, j))
-    );
-  }
-
-  countBombsByTile(value, row, col) {
-    const more = (col, row) => {
-      if (row < 0) return;
-      if (row >= this.dimensions[0]) return;
-      if (this.virtualField[row][col] === true) return;
-      this.virtualField[row][col] += 1;
-    };
-    const add = (col, row) => {
-      if (col < 0) return;
-      if (col >= this.dimensions[1]) return;
-      more(col, row - 1);
-      more(col, row);
-      more(col, row + 1);
-    };
-    if (value !== true) return;
-    add(col - 1, row);
-    add(col, row);
-    add(col + 1, row);
-  }
-
-  listenToAllTiels() {
-    this.tileNodes = document.querySelectorAll(".game__tile");
-    this.tileNodes.forEach((tile) => {
-      tile.addEventListener("click", () => {
-        this.checkTile(tile.dataset.tileNumber);
+        this.startGame();
       });
     });
   }
 
-  checkTile(number) {
-    const value = this.straightVirtualField[number];
-    const selectedTile = this.tileNodes[number];
+	listenToRestartBtn() {
+		this.restartBtn.addEventListener("click",()=>{
+			this.toggleVictoryScreen();
+			this.newGame();
+		})
+	}
+
+  clearAll() {
+    this.nodeField.innerHTML = null; // or ""
+    this.mines = 0;
+    this.playerMines = 0;
+    this.updateMinesView();
+  }
+
+  generateField() {
+    switch (this.difficulty) {
+      case "easy":
+        this.size = { rows: 8, cols: 6 };
+        break;
+      case "normal":
+        this.size = { rows: 10, cols: 8 };
+        break;
+      case "hard":
+        this.size = { rows: 12, cols: 10 };
+        break;
+      default:
+        this.size = { rows: 8, cols: 6 };
+    }
+    this.nodeField.style.gridTemplateRows = `repeat(${this.size.rows}, 3rem)`;
+    this.nodeField.style.gridTemplateColumns = `repeat(${this.size.cols}, 3rem)`;
+
+    for (let i = 0; i < this.size.rows * this.size.cols; i++) {
+      const tile = document.createElement("button");
+      tile.classList.add("game__tile");
+      this.nodeField.appendChild(tile);
+      tile.addEventListener("click", () => {
+        this.revealTile(i);
+      });
+    }
+
+    this.tileNodes = document.querySelectorAll(".game__tile");
+
+    this.development &&
+      console.log(`[dev] Generated ${this.size.rows * this.size.cols} tiles!`);
+  }
+
+  generateVirtualField() {
+    this.virtualField = new Array(this.size.rows * this.size.cols).fill(null);
+    this.placeMinesRandomly(this.size.rows);
+  }
+
+  placeMinesRandomly(minesCount) {
+    const placeIt = () => {
+      const randomNum = Math.floor(
+        Math.random() * this.size.rows * this.size.cols
+      );
+      if (this.virtualField[randomNum] === true) {
+        placeIt();
+        return;
+      }
+      this.virtualField[randomNum] = true;
+
+      this.development && console.log(`Dropped a mine tile #${randomNum}.`);
+    };
+    for (let i = 0; i < minesCount; i++) {
+      placeIt();
+    }
+    this.mines = minesCount;
+    this.playerMines = minesCount;
+    this.updateMinesView();
+  }
+
+  revealTile(tileNum) {
+    const selectedTile = this.tileNodes[tileNum];
+    const tileValue = this.virtualField[tileNum];
+    const checkTile = (row, col) => {
+      if (row >= this.size.rows || row < 0) return;
+      if (col >= this.size.cols || col < 0) return;
+
+      const chekingTileNum = this.convertToOneDim(row, col);
+      const chekingTileValue = this.virtualField[chekingTileNum];
+
+      if (chekingTileValue === true) return true;
+      return false;
+    };
+    const countAttachedMines = (tileNum) => {
+      let minesCount = 0;
+      const [row, col] = this.convertToTwoDim(tileNum);
+      for (let i = -1; i < 2; i++) {
+        for (let j = -1; j < 2; j++) {
+          if (i === 0 && j == 0) continue;
+          if (checkTile(row + i, col + j)) minesCount++;
+        }
+      }
+      return minesCount;
+    };
 
     if (selectedTile.classList.contains("_revealed")) return;
     switch (this.mode) {
       case "mines":
         if (selectedTile.classList.contains("_flagged")) return;
-        if (value === true) {
-          this.totalMines -= 1;
-          this.changeAndShowPlayerMines(this.playerMines - 1);
+        if (tileValue === true) {
           selectedTile.classList.add("_exploded");
-        }
-        if (typeof value === "number") {
-          selectedTile.classList.add("_" + value);
-          selectedTile.innerText = value;
+          this.mines--;
+          this.playerMines--;
+          this.updateMinesView();
+        } else {
+          const nearbyMines = countAttachedMines(tileNum);
+          if (nearbyMines > 0) {
+            selectedTile.classList.add(`_${nearbyMines}`);
+            selectedTile.innerText = nearbyMines;
+          }
         }
         selectedTile.classList.add("_revealed");
+
+        this.development && console.log(`[dev] Revealed #${tileNum} tile.`);
         break;
       case "flags":
         if (selectedTile.classList.contains("_flagged")) {
-          this.changeAndShowPlayerMines(this.playerMines + 1);
-          if (value === true) this.totalMines += 1;
-        }
-        if (!selectedTile.classList.contains("_flagged")) {
-          this.changeAndShowPlayerMines(this.playerMines - 1);
-          if (value === true) this.totalMines -= 1;
+          this.playerMines++;
+          this.updateMinesView();
+          if (tileValue === true) {
+            this.mines++;
+            this.updateMinesView();
+          }
+        } else {
+          this.playerMines--;
+          this.updateMinesView();
+          if (tileValue === true) {
+            this.mines--;
+            this.updateMinesView();
+          }
         }
         selectedTile.classList.toggle("_flagged");
     }
-    if (this.totalMines === 0 && this.playerMines === 0) this.endGame();
+		this.checkForWin();
   }
-  endGame() {
-    //show msg
-    this.startGame();
+
+  updateMinesView() {
+    this.minesCountNode.innerText = this.playerMines;
+  }
+
+	checkForWin() {
+		if (this.playerMines !== this.mines) return;
+		if (this.mines !== 0) return;
+		this.toggleVictoryScreen();
+	}
+
+	toggleVictoryScreen() {
+		this.victoryNode.classList.toggle("hidden");
+	}
+
+  convertToTwoDim(tileNum) {
+    const row = Math.floor(tileNum / this.size.cols);
+    const col = tileNum - row * this.size.cols;
+
+    return [row, col];
+  }
+  convertToOneDim(row, col) {
+    this.development &&
+      console.log(
+        `Converted tile #[${row},${col} to #${row * this.size.cols + col}]`
+      );
+    return row * this.size.cols + col;
   }
 }
 
-const field = new Minesweeper("easy");
-field.startGame();
+const game = new Minesweeper(true);
+game.newGame();

@@ -90,8 +90,34 @@ $color4: #0a9aff;
 .container {
   $padding: 12px;
   padding: 0 $padding;
-  max-width: $content + $padding * 2;
+  //max-width: $content + $padding * 2;
   margin: 0 auto;
+}
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.btn {
+  padding: 0.75em 1em;
+
+  font-size: 1.2em;
+
+  border: black 0.2em solid;
+  transition: 0.3s;
+  &:active {
+    transform: translateY(7%);
+  }
+}
+
+.bg {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  &._c {
+    background-size: contain;
+  }
 }
 
 /**********************
@@ -107,6 +133,11 @@ $color4: #0a9aff;
   min-height: 100vh;
 
   background: linear-gradient(270deg, #00f2fe 0%, #4facfe 100%);
+
+  &__title {
+    font-size: 2rem;
+  }
+
   &__board {
     display: grid;
     // grid-template-columns: repeat(3, 3rem);
@@ -119,7 +150,7 @@ $color4: #0a9aff;
     display: grid;
     place-items: center;
 
-		font-size: 1rem;
+    font-size: 1rem;
 
     background-color: #e5e5e5;
     border: 0.5rem outset #afafaf;
@@ -129,6 +160,8 @@ $color4: #0a9aff;
     &._revealed {
       border: 0.5rem solid transparent;
       background-color: grey;
+
+			cursor: auto;
     }
     &._flagged {
       background-color: black;
@@ -139,7 +172,7 @@ $color4: #0a9aff;
     }
     @for $i from 1 through 9 {
       &._#{$i} {
-				$color: 218 * $i;
+        $color: 218 * $i;
         color: hsl($color, 100%, 50%);
       }
     }
@@ -150,20 +183,102 @@ $color4: #0a9aff;
 }
 .mode {
   position: fixed;
-  right: 0;
   bottom: 0;
-  padding: 1rem;
+  right: 0;
+  &__container {
+    padding: 2rem;
+    width: 9rem;
+    height: 9rem;
+  }
+  &__btn {
+    width: 100%;
+    height: 100%;
 
-  cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  font-size: 2rem;
+    background-color: whitesmoke;
+    border: black 0.5em solid;
+  }
+  &__img-layout {
+		width: 90%;
+		height: 90%;
+
+    background-image: url("../img/mine.png");
+  }
+  &__btn._flag &__img-layout {
+    background-image: url("../img/flag.png");
+  }
 }
 
 .mines-count {
   top: 0;
   left: 0;
   position: fixed;
-  padding: 1rem;
 
-  font-size: 2rem;
+  &__container {
+    padding: 2rem;
+
+    font-size: 2rem;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+  }
+
+  &__count {
+    margin-right: 0.5em;
+  }
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background-color: rgba($color: black, $alpha: 0.5);
+  &__container {
+    @extend .container;
+    max-width: $normal;
+    height: 100%;
+
+    display: grid;
+    place-items: center;
+  }
+
+  &__body {
+    width: 100%;
+    min-height: $x-small;
+
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(0deg, #37ecba 0%, #72afd3 100%);
+  }
+
+  &__title {
+    margin-bottom: 1.5em;
+
+    color: white;
+    line-height: 2;
+    text-align: center;
+    font-size: 1.5rem;
+  }
+
+  &__btn {
+    margin-bottom: 1em;
+    display: inline-block;
+
+    color: white;
+    background-color: #0a9aff;
+    &:hover {
+      background-color: darkcyan;
+    }
+  }
 }
