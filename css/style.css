@@ -1,0 +1,257 @@
+/* ---------Reset Styles--------- */
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+:focus,
+:active {
+  outline: none;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-size: 100%;
+  line-height: 1;
+  vertical-align: baseline;
+}
+
+picture,
+img {
+  display: inline-block;
+  vertical-align: top;
+}
+
+input,
+button,
+textarea,
+select {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+button,
+input[type="button"],
+input[type="checkbox"],
+input[type="radio"],
+input[type="submit"] {
+  cursor: pointer;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+a,
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul,
+li,
+ol {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: 400;
+}
+
+address {
+  font-style: normal;
+}
+
+/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *:before,
+  *:after {
+    -webkit-animation-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+    -webkit-animation-iteration-count: 1 !important;
+            animation-iteration-count: 1 !important;
+    -webkit-transition-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*----------------End of reset styles--------------------*/
+@font-face {
+  font-family: "botsmaticdemo";
+  font-display: swap;
+  src: url(../fonts/botsmaticdemo.woff2) format("woff2"), url(../fonts/botsmaticdemo.woff) format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PixelFJVerdana12pt";
+  font-display: swap;
+  src: url(../fonts/PixelFJVerdana12pt.woff2) format("woff2"), url(../fonts/PixelFJVerdana12pt.woff) format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+:root {
+  font-family: "PixelFJVerdana12pt", monospace;
+}
+
+._lock {
+  overflow: hidden;
+}
+
+.container {
+  padding: 0 12px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/**********************
+        CONTENT
+*********************/
+.game {
+  display: -ms-grid;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background: -webkit-gradient(linear, right top, left top, from(#00f2fe), to(#4facfe));
+  background: linear-gradient(270deg, #00f2fe 0%, #4facfe 100%);
+}
+
+.game__board {
+  display: -ms-grid;
+  display: grid;
+  border: 1rem solid #4177c7;
+}
+
+.game__tile {
+  display: -ms-grid;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  background-color: #e5e5e5;
+  border: 0.5rem outset #afafaf;
+}
+
+.game__tile:active {
+  border-style: inset;
+}
+
+.game__tile._revealed {
+  border: 0.5rem solid transparent;
+  background-color: grey;
+}
+
+.game__tile._flagged {
+  background-color: black;
+}
+
+.game__tile._exploded {
+  background-color: red;
+  border: 0.5rem solid orange;
+}
+
+.game__tile._1 {
+  color: #005eff;
+}
+
+.game__tile._2 {
+  color: #bbff00;
+}
+
+.game__tile._3 {
+  color: #e600ff;
+}
+
+.game__tile._4 {
+  color: #00ff88;
+}
+
+.game__tile._5 {
+  color: #ff2b00;
+}
+
+.game__tile._6 {
+  color: #0033ff;
+}
+
+.game__tile._7 {
+  color: #91ff00;
+}
+
+.game__tile._8 {
+  color: #ff00ee;
+}
+
+.game__tile._9 {
+  color: #00ffb3;
+}
+
+.mode {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  padding: 1rem;
+  cursor: pointer;
+  font-size: 2rem;
+}
+
+.mines-count {
+  top: 0;
+  left: 0;
+  position: fixed;
+  padding: 1rem;
+  font-size: 2rem;
+}

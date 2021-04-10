@@ -1,0 +1,169 @@
+@import "_reset.scss";
+@import "./_fonts";
+//pointer-events: none; makes element transparent for clicking
+
+@function strip-units($number) {
+  @return $number / ($number * 0 + 1);
+}
+@mixin media-wp($_a) {
+  @media only all and (min-width: $_a) {
+    @content;
+  }
+}
+
+@mixin media-wm($_b) {
+  @media only all and (max-width: $_b) {
+    @content;
+  }
+}
+
+@mixin media-hp($_c) {
+  @media only all and (min-height: $_c) {
+    @content;
+  }
+}
+
+@mixin media-hm($_d) {
+  @media only all and (max-hemin: $_d) {
+    @content;
+  }
+}
+
+// @mixin distance-responsive($_a, $_b, $_vw0, $_vw1, $_prop) {
+//   #{$_prop}: #{$_a + px};
+//   @include media_wp(#{$_vw0 + px}) {
+//     #{$_prop}: calc(
+//       #{$_a + px} + (100vw - #{$_vw0 + px}) * (#{$_b} - #{$_a}) / (#{$_vw1} - #{$_vw0})
+//     );
+//   }
+//   @include media_wp(#{$_vw1 + px}) {
+//     #{$_prop}: #{$_b + px};
+//   }
+// }
+
+@mixin responsive-size($_a, $_b, $_vw0, $_vw1, $_props...) {
+  //distance-responsive(наймешне значення, найбільше значення, наймеша ширина екрану, найбільша ширина екрану, prop1, pro2, ...)
+  $_c: ($_b - $_a) / ($_vw1 - $_vw0);
+  @each $_prop in $_props {
+    #{$_prop}: #{$_a + px};
+  }
+  @media only all and (min-width: #{$_vw0 + px}) {
+    @each $_prop in $_props {
+      #{$_prop}: calc(100vw * #{$_c} + #{$_a - $_vw0 * $_c + px});
+    }
+  }
+  @media only all and (min-width: #{$_vw1 + px}) {
+    @each $_prop in $_props {
+      #{$_prop}: #{$_b + px};
+    }
+  }
+}
+
+$sexy-background: linear-gradient(223.58deg, #167524 -1.08%, #c8db81 85.64%);
+$gradient: linear-gradient(to right, #ff8a0a, #d06d00);
+
+$xx-small: 320px;
+$x-small: 480px;
+$small: 576px;
+$normal: 768px;
+$large: 992px;
+$x-large: 1200px;
+$xx-large: 1920px;
+
+$content: 576px;
+
+$trnst: 0.3s ease;
+
+$color1: #eca84d;
+$color2: #29d225;
+$color3: #ff5733;
+$color4: #0a9aff;
+
+:root {
+  font-family: "PixelFJVerdana12pt", monospace;
+}
+
+._lock {
+  overflow: hidden;
+}
+
+.container {
+  $padding: 12px;
+  padding: 0 $padding;
+  max-width: $content + $padding * 2;
+  margin: 0 auto;
+}
+
+/**********************
+        CONTENT
+*********************/
+
+.wrapper {
+}
+.game {
+  display: grid;
+  place-items: center;
+
+  min-height: 100vh;
+
+  background: linear-gradient(270deg, #00f2fe 0%, #4facfe 100%);
+  &__board {
+    display: grid;
+    // grid-template-columns: repeat(3, 3rem);
+    // grid-template-rows: repeat(3, 3rem);
+
+    border: 1rem solid #4177c7;
+  }
+
+  &__tile {
+    display: grid;
+    place-items: center;
+
+		font-size: 1rem;
+
+    background-color: #e5e5e5;
+    border: 0.5rem outset #afafaf;
+    &:active {
+      border-style: inset;
+    }
+    &._revealed {
+      border: 0.5rem solid transparent;
+      background-color: grey;
+    }
+    &._flagged {
+      background-color: black;
+    }
+    &._exploded {
+      background-color: red;
+      border: 0.5rem solid orange;
+    }
+    @for $i from 1 through 9 {
+      &._#{$i} {
+				$color: 218 * $i;
+        color: hsl($color, 100%, 50%);
+      }
+    }
+  }
+}
+
+.layout {
+}
+.mode {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  padding: 1rem;
+
+  cursor: pointer;
+
+  font-size: 2rem;
+}
+
+.mines-count {
+  top: 0;
+  left: 0;
+  position: fixed;
+  padding: 1rem;
+
+  font-size: 2rem;
+}
