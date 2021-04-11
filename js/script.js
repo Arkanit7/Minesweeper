@@ -30,8 +30,10 @@ class Minesweeper {
     this.difficultyNode = document.querySelector(".diff");
     this.difficultyBtnNodes = document.querySelectorAll("[data-difficulty]");
     this.minesCountNode = document.querySelector(".mines-count__count");
-    this.victoryNode = document.querySelector(".victory-screen");
+    this.restartNode = document.querySelector(".restart-screen");
+		this.restartTextNode = this.restartNode.querySelector("[data-restart-text]")
     this.restartBtn = document.querySelector("[data-restart]");
+    this.lifeCountNode = document.querySelector("[data-life]");
     this.listenToModeSwitcher();
     this.listenToDifficultyBtns();
     this.listenToRestartBtn();
@@ -58,6 +60,7 @@ class Minesweeper {
   startGame() {
     this.sound.startMusic();
 
+    this.updateLife(2);
     this.toggleDifficultyWindow();
     this.generateField();
     this.generateVirtualField();
@@ -85,13 +88,14 @@ class Minesweeper {
 
   listenToRestartBtn() {
     this.restartBtn.addEventListener("click", () => {
-      this.toggleVictoryScreen();
+      this.toggleRestartScreen();
       this.newGame();
     });
   }
 
   clearAll() {
     this.nodeField.innerHTML = null; // or ""
+    this.life = 0;
     this.mines = 0;
     this.playerMines = 0;
     this.updateMinesView();
@@ -202,6 +206,13 @@ class Minesweeper {
           this.playerMines--;
           this.updateMinesView();
           this.sound.boom();
+
+          if (this.life === 0) {
+            this.toggleRestartScreen("You exploded.");
+						this.sound.stopMusic();
+            return;
+          }
+          this.updateLife(-1);
         } else {
           this.firstTile = false;
           const nearbyMines = countAttachedMines(tileNum);
@@ -245,6 +256,11 @@ class Minesweeper {
     this.checkForWin();
   }
 
+  updateLife(value) {
+    this.life += value;
+    this.lifeCountNode.innerText = this.life;
+  }
+
   updateMinesView() {
     this.minesCountNode.innerText = this.playerMines;
   }
@@ -253,11 +269,12 @@ class Minesweeper {
     if (this.playerMines !== this.mines) return;
     if (this.mines !== 0) return;
     this.sound.stopMusic();
-    this.toggleVictoryScreen();
+    this.toggleRestartScreen("Victory!");
   }
 
-  toggleVictoryScreen() {
-    this.victoryNode.classList.toggle("hidden");
+  toggleRestartScreen(text = "Restart the game?") {
+    this.restartTextNode.innerText = text;
+    this.restartNode.classList.toggle("hidden");
   }
 
   convertToTwoDim(tileNum) {

@@ -402,3 +402,31 @@ address {
 .popup__btn:hover {
   background-color: darkcyan;
 }
+
+.life {
+  top: 0;
+  right: 0;
+  position: fixed;
+}
+
+.life__container {
+  padding: 2rem;
+  font-size: 2rem;
+}
+
+.life__row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.life__count {
+  margin-right: 0.5em;
+}
+
+.life img {
+  width: 90px;
+}

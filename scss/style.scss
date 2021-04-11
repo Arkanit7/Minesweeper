@@ -285,3 +285,28 @@ $color4: #0a9aff;
     }
   }
 }
+
+.life {
+  top: 0;
+  right: 0;
+  position: fixed;
+
+  &__container {
+    padding: 2rem;
+
+    font-size: 2rem;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+  }
+
+  &__count {
+    margin-right: 0.5em;
+  }
+
+	img {
+		width: 90px;
+	}
+}
