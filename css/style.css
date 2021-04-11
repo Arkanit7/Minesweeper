@@ -175,13 +175,13 @@ address {
           transform: translateY(7%);
 }
 
-.bg {
+.bg, .game__tile {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
-.bg._c {
+.bg._c, ._c.game__tile {
   background-size: contain;
 }
 
@@ -204,7 +204,7 @@ address {
 .game__board {
   display: -ms-grid;
   display: grid;
-  border: 1rem solid #4177c7;
+  border: 1rem solid darkcyan;
 }
 
 .game__tile {
@@ -214,6 +214,7 @@ address {
   font-size: 1rem;
   background-color: #e5e5e5;
   border: 0.5rem outset #afafaf;
+  background-size: cover;
 }
 
 .game__tile:active {
@@ -227,12 +228,13 @@ address {
 }
 
 .game__tile._flagged {
-  background-color: black;
+  background-image: url("../img/flag.png");
 }
 
 .game__tile._exploded {
   background-color: red;
-  border: 0.5rem solid orange;
+  background-image: url("../img/mine.png");
+  border: 0.5rem solid transparent;
 }
 
 .game__tile._1 {

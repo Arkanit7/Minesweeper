@@ -5,7 +5,7 @@ class SoundController {
     this.boomSound = new Audio("./sounds/boom.wav");
     this.boomSound.volume = 1;
     this.bgMusic = new Audio("./sounds/main.mp3");
-    this.bgMusic.volume = 0.5;
+    this.bgMusic.volume = 0.1;
     this.bgMusic.loop = true;
   }
   startMusic() {
@@ -30,11 +30,11 @@ class Minesweeper {
     this.difficultyNode = document.querySelector(".diff");
     this.difficultyBtnNodes = document.querySelectorAll("[data-difficulty]");
     this.minesCountNode = document.querySelector(".mines-count__count");
-		this.victoryNode = document.querySelector(".victory-screen");
-		this.restartBtn = document.querySelector("[data-restart]");
+    this.victoryNode = document.querySelector(".victory-screen");
+    this.restartBtn = document.querySelector("[data-restart]");
     this.listenToModeSwitcher();
     this.listenToDifficultyBtns();
-		this.listenToRestartBtn();
+    this.listenToRestartBtn();
 
     this.development && console.log(`[dev] Initialized.`);
   }
@@ -55,6 +55,8 @@ class Minesweeper {
   }
 
   startGame() {
+		this.sound.startMusic();
+
     this.toggleDifficultyWindow();
     this.generateField();
     this.generateVirtualField();
@@ -80,12 +82,12 @@ class Minesweeper {
     });
   }
 
-	listenToRestartBtn() {
-		this.restartBtn.addEventListener("click",()=>{
-			this.toggleVictoryScreen();
-			this.newGame();
-		})
-	}
+  listenToRestartBtn() {
+    this.restartBtn.addEventListener("click", () => {
+      this.toggleVictoryScreen();
+      this.newGame();
+    });
+  }
 
   clearAll() {
     this.nodeField.innerHTML = null; // or ""
@@ -128,7 +130,7 @@ class Minesweeper {
 
   generateVirtualField() {
     this.virtualField = new Array(this.size.rows * this.size.cols).fill(null);
-    this.placeMinesRandomly(this.size.rows);
+    this.placeMinesRandomly(this.size.rows + 4);
   }
 
   placeMinesRandomly(minesCount) {
@@ -160,9 +162,9 @@ class Minesweeper {
       if (col >= this.size.cols || col < 0) return;
 
       const chekingTileNum = this.convertToOneDim(row, col);
-      const chekingTileValue = this.virtualField[chekingTileNum];
+      const checkingTileValue = this.virtualField[chekingTileNum];
 
-      if (chekingTileValue === true) return true;
+      if (checkingTileValue === true) return true;
       return false;
     };
     const countAttachedMines = (tileNum) => {
@@ -181,19 +183,32 @@ class Minesweeper {
     switch (this.mode) {
       case "mines":
         if (selectedTile.classList.contains("_flagged")) return;
+        selectedTile.classList.add("_revealed");
         if (tileValue === true) {
           selectedTile.classList.add("_exploded");
           this.mines--;
           this.playerMines--;
           this.updateMinesView();
+					this.sound.boom();
         } else {
           const nearbyMines = countAttachedMines(tileNum);
           if (nearbyMines > 0) {
             selectedTile.classList.add(`_${nearbyMines}`);
             selectedTile.innerText = nearbyMines;
+          } else {
+            //reveal all nearby tiles
+            const [row, col] = this.convertToTwoDim(tileNum);
+            for (let i = -1; i < 2; i++) {
+              for (let j = -1; j < 2; j++) {
+                if (i === 0 && j == 0) continue;
+                if (row + i >= this.size.rows || row + i < 0) continue;
+                if (col + j >= this.size.cols || col + j < 0) continue;
+                const num = this.convertToOneDim(row + i, col + j);
+                this.revealTile(num);
+              }
+            }
           }
         }
-        selectedTile.classList.add("_revealed");
 
         this.development && console.log(`[dev] Revealed #${tileNum} tile.`);
         break;
@@ -215,22 +230,23 @@ class Minesweeper {
         }
         selectedTile.classList.toggle("_flagged");
     }
-		this.checkForWin();
+    this.checkForWin();
   }
 
   updateMinesView() {
     this.minesCountNode.innerText = this.playerMines;
   }
 
-	checkForWin() {
-		if (this.playerMines !== this.mines) return;
-		if (this.mines !== 0) return;
-		this.toggleVictoryScreen();
-	}
+  checkForWin() {
+    if (this.playerMines !== this.mines) return;
+    if (this.mines !== 0) return;
+		this.sound.stopMusic();
+    this.toggleVictoryScreen();
+  }
 
-	toggleVictoryScreen() {
-		this.victoryNode.classList.toggle("hidden");
-	}
+  toggleVictoryScreen() {
+    this.victoryNode.classList.toggle("hidden");
+  }
 
   convertToTwoDim(tileNum) {
     const row = Math.floor(tileNum / this.size.cols);

@@ -143,7 +143,7 @@ $color4: #0a9aff;
     // grid-template-columns: repeat(3, 3rem);
     // grid-template-rows: repeat(3, 3rem);
 
-    border: 1rem solid #4177c7;
+    border: 1rem solid darkcyan;
   }
 
   &__tile {
@@ -154,6 +154,8 @@ $color4: #0a9aff;
 
     background-color: #e5e5e5;
     border: 0.5rem outset #afafaf;
+		@extend .bg;
+		background-size: cover;
     &:active {
       border-style: inset;
     }
@@ -164,11 +166,12 @@ $color4: #0a9aff;
 			cursor: auto;
     }
     &._flagged {
-      background-color: black;
+      background-image: url("../img/flag.png");
     }
     &._exploded {
       background-color: red;
-      border: 0.5rem solid orange;
+			background-image: url("../img/mine.png");
+      border: 0.5rem solid transparent;
     }
     @for $i from 1 through 9 {
       &._#{$i} {
