@@ -198,7 +198,19 @@ address {
 }
 
 .game__title {
-  font-size: 2rem;
+  font-size: 18px;
+}
+
+@media only all and (min-width: 320px) {
+  .game__title {
+    font-size: calc(100vw * 0.03125 + 8px);
+  }
+}
+
+@media only all and (min-width: 768px) {
+  .game__title {
+    font-size: 32px;
+  }
 }
 
 .game__board {

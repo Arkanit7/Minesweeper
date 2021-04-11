@@ -52,10 +52,11 @@ class Minesweeper {
   newGame() {
     this.clearAll();
     this.toggleDifficultyWindow();
+    this.firstTile = true;
   }
 
   startGame() {
-		this.sound.startMusic();
+    this.sound.startMusic();
 
     this.toggleDifficultyWindow();
     this.generateField();
@@ -149,8 +150,8 @@ class Minesweeper {
     for (let i = 0; i < minesCount; i++) {
       placeIt();
     }
-    this.mines = minesCount;
-    this.playerMines = minesCount;
+    this.mines += minesCount;
+    this.playerMines += minesCount;
     this.updateMinesView();
   }
 
@@ -185,12 +186,24 @@ class Minesweeper {
         if (selectedTile.classList.contains("_flagged")) return;
         selectedTile.classList.add("_revealed");
         if (tileValue === true) {
+          if (this.firstTile) {
+            selectedTile.classList.remove("_revealed");
+
+            this.virtualField[tileNum] = null;
+            this.mines--;
+            this.playerMines--;
+
+            this.placeMinesRandomly(1);
+            this.revealTile(tileNum);
+            return;
+          }
           selectedTile.classList.add("_exploded");
           this.mines--;
           this.playerMines--;
           this.updateMinesView();
-					this.sound.boom();
+          this.sound.boom();
         } else {
+          this.firstTile = false;
           const nearbyMines = countAttachedMines(tileNum);
           if (nearbyMines > 0) {
             selectedTile.classList.add(`_${nearbyMines}`);
@@ -209,7 +222,6 @@ class Minesweeper {
             }
           }
         }
-
         this.development && console.log(`[dev] Revealed #${tileNum} tile.`);
         break;
       case "flags":
@@ -240,7 +252,7 @@ class Minesweeper {
   checkForWin() {
     if (this.playerMines !== this.mines) return;
     if (this.mines !== 0) return;
-		this.sound.stopMusic();
+    this.sound.stopMusic();
     this.toggleVictoryScreen();
   }
 

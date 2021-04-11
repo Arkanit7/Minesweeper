@@ -135,7 +135,7 @@ $color4: #0a9aff;
   background: linear-gradient(270deg, #00f2fe 0%, #4facfe 100%);
 
   &__title {
-    font-size: 2rem;
+    @include responsive-size(18, 32, 320, strip-units($normal), font-size);
   }
 
   &__board {
@@ -154,8 +154,8 @@ $color4: #0a9aff;
 
     background-color: #e5e5e5;
     border: 0.5rem outset #afafaf;
-		@extend .bg;
-		background-size: cover;
+    @extend .bg;
+    background-size: cover;
     &:active {
       border-style: inset;
     }
@@ -163,14 +163,14 @@ $color4: #0a9aff;
       border: 0.5rem solid transparent;
       background-color: grey;
 
-			cursor: auto;
+      cursor: auto;
     }
     &._flagged {
       background-image: url("../img/flag.png");
     }
     &._exploded {
       background-color: red;
-			background-image: url("../img/mine.png");
+      background-image: url("../img/mine.png");
       border: 0.5rem solid transparent;
     }
     @for $i from 1 through 9 {
@@ -205,8 +205,8 @@ $color4: #0a9aff;
     border: black 0.5em solid;
   }
   &__img-layout {
-		width: 90%;
-		height: 90%;
+    width: 90%;
+    height: 90%;
 
     background-image: url("../img/mine.png");
   }
