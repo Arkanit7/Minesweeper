@@ -129,14 +129,6 @@ address {
 
 /*----------------End of reset styles--------------------*/
 @font-face {
-  font-family: "botsmaticdemo";
-  font-display: swap;
-  src: url(../fonts/botsmaticdemo.woff2) format("woff2"), url(../fonts/botsmaticdemo.woff) format("woff");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
   font-family: "PixelFJVerdana12pt";
   font-display: swap;
   src: url(../fonts/PixelFJVerdana12pt.woff2) format("woff2"), url(../fonts/PixelFJVerdana12pt.woff) format("woff");
@@ -191,19 +183,22 @@ address {
 .game {
   display: -ms-grid;
   display: grid;
-  place-items: center;
+  justify-items: center;
+  -ms-flex-line-pack: center;
+      align-content: center;
   min-height: 100vh;
   background: -webkit-gradient(linear, right top, left top, from(#00f2fe), to(#4facfe));
   background: linear-gradient(270deg, #00f2fe 0%, #4facfe 100%);
 }
 
 .game__title {
-  font-size: 18px;
+  font-size: 24px;
+  margin-bottom: 2em;
 }
 
 @media only all and (min-width: 320px) {
   .game__title {
-    font-size: calc(100vw * 0.03125 + 8px);
+    font-size: calc(100vw * 0.01786 + 18.28571px);
   }
 }
 
@@ -216,7 +211,9 @@ address {
 .game__board {
   display: -ms-grid;
   display: grid;
-  border: 1rem solid darkcyan;
+  background: radial-gradient(100.88% 100.88% at -2.62% -4.5%, rgba(255, 255, 255, 0.3) 0%, rgba(0, 0, 0, 0.3) 100%), -webkit-gradient(linear, left top, left bottom, from(#BCC5CE), color-stop(98.18%, #929EAD));
+  background: radial-gradient(100.88% 100.88% at -2.62% -4.5%, rgba(255, 255, 255, 0.3) 0%, rgba(0, 0, 0, 0.3) 100%), linear-gradient(180deg, #BCC5CE 0%, #929EAD 98.18%);
+  border: 1rem outset darkcyan;
 }
 
 .game__tile {
@@ -234,8 +231,8 @@ address {
 }
 
 .game__tile._revealed {
-  border: 0.5rem solid transparent;
-  background-color: grey;
+  border: none;
+  background-color: transparent;
   cursor: auto;
 }
 
@@ -246,7 +243,6 @@ address {
 .game__tile._exploded {
   background-color: red;
   background-image: url("../img/mine.png");
-  border: 0.5rem solid transparent;
 }
 
 .game__tile._1 {
@@ -286,65 +282,30 @@ address {
 }
 
 .mode {
+  padding: 0.75rem;
   position: fixed;
   bottom: 0;
   right: 0;
-}
-
-.mode__container {
-  padding: 2rem;
-  width: 9rem;
-  height: 9rem;
+  width: 6rem;
+  height: 6rem;
 }
 
 .mode__btn {
   width: 100%;
   height: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  background-color: whitesmoke;
-  border: black 0.5em solid;
+  padding: .3rem;
+  background-color: #e5e5e5;
+  border: #afafaf 0.5rem outset;
 }
 
 .mode__img-layout {
-  width: 90%;
-  height: 90%;
+  width: 100%;
+  height: 100%;
   background-image: url("../img/mine.png");
 }
 
 .mode__btn._flag .mode__img-layout {
   background-image: url("../img/flag.png");
-}
-
-.mines-count {
-  top: 0;
-  left: 0;
-  position: fixed;
-}
-
-.mines-count__container {
-  padding: 2rem;
-  font-size: 2rem;
-}
-
-.mines-count__row {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-.mines-count__count {
-  margin-right: 0.5em;
 }
 
 .popup {
@@ -403,18 +364,21 @@ address {
   background-color: darkcyan;
 }
 
-.life {
-  top: 0;
-  right: 0;
+.corner-layout {
+  padding: 0.75rem;
   position: fixed;
+  top: 0;
+  left: 0;
+  font-size: 1.5rem;
 }
 
-.life__container {
-  padding: 2rem;
-  font-size: 2rem;
+.corner-layout._right {
+  left: auto;
+  right: 0;
 }
 
-.life__row {
+.corner-layout__row {
+  height: 2.5rem;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -423,10 +387,10 @@ address {
           align-items: center;
 }
 
-.life__count {
+.corner-layout__count {
   margin-right: 0.5em;
 }
 
-.life img {
-  width: 90px;
+.corner-layout img {
+  height: 100%;
 }

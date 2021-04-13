@@ -128,22 +128,23 @@ $color4: #0a9aff;
 }
 .game {
   display: grid;
-  place-items: center;
+  justify-items: center;
+  align-content: center;
 
   min-height: 100vh;
 
   background: linear-gradient(270deg, #00f2fe 0%, #4facfe 100%);
 
   &__title {
-    @include responsive-size(18, 32, 320, strip-units($normal), font-size);
+    @include responsive-size(24, 32, 320, strip-units($normal), font-size);
+    margin-bottom: 2em;
   }
 
   &__board {
     display: grid;
-    // grid-template-columns: repeat(3, 3rem);
-    // grid-template-rows: repeat(3, 3rem);
 
-    border: 1rem solid darkcyan;
+    background: radial-gradient(100.88% 100.88% at -2.62% -4.5%, rgba(255, 255, 255, 0.3) 0%, rgba(0, 0, 0, 0.3) 100%), linear-gradient(180deg, #BCC5CE 0%, #929EAD 98.18%);
+    border: 1rem outset darkcyan;
   }
 
   &__tile {
@@ -160,8 +161,8 @@ $color4: #0a9aff;
       border-style: inset;
     }
     &._revealed {
-      border: 0.5rem solid transparent;
-      background-color: grey;
+      border: none;
+      background-color: transparent;
 
       cursor: auto;
     }
@@ -171,7 +172,6 @@ $color4: #0a9aff;
     &._exploded {
       background-color: red;
       background-image: url("../img/mine.png");
-      border: 0.5rem solid transparent;
     }
     @for $i from 1 through 9 {
       &._#{$i} {
@@ -184,55 +184,32 @@ $color4: #0a9aff;
 
 .layout {
 }
+$layout-pads: 0.75rem;
 .mode {
+  padding: $layout-pads;
   position: fixed;
   bottom: 0;
   right: 0;
-  &__container {
-    padding: 2rem;
-    width: 9rem;
-    height: 9rem;
-  }
+
+  width: 6rem;
+  height: 6rem;
+
   &__btn {
     width: 100%;
     height: 100%;
+		padding: .3rem;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: whitesmoke;
-    border: black 0.5em solid;
+    background-color: #e5e5e5;
+    border: #afafaf 0.5rem outset;
   }
   &__img-layout {
-    width: 90%;
-    height: 90%;
+    width: 100%;
+    height: 100%;
 
     background-image: url("../img/mine.png");
   }
   &__btn._flag &__img-layout {
     background-image: url("../img/flag.png");
-  }
-}
-
-.mines-count {
-  top: 0;
-  left: 0;
-  position: fixed;
-
-  &__container {
-    padding: 2rem;
-
-    font-size: 2rem;
-  }
-
-  &__row {
-    display: flex;
-    align-items: center;
-  }
-
-  &__count {
-    margin-right: 0.5em;
   }
 }
 
@@ -286,19 +263,23 @@ $color4: #0a9aff;
   }
 }
 
-.life {
-  top: 0;
-  right: 0;
+.corner-layout {
+  padding: $layout-pads;
   position: fixed;
+  top: 0;
+  left: 0;
 
-  &__container {
-    padding: 2rem;
+  font-size: 1.5rem;
 
-    font-size: 2rem;
+  &._right {
+    left: auto;
+    right: 0;
   }
 
   &__row {
+    height: 2.5rem;
     display: flex;
+
     align-items: center;
   }
 
@@ -306,7 +287,7 @@ $color4: #0a9aff;
     margin-right: 0.5em;
   }
 
-	img {
-		width: 90px;
-	}
+  img {
+    height: 100%;
+  }
 }

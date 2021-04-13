@@ -26,14 +26,13 @@ class Minesweeper {
     this.sound = new SoundController();
     this.nodeField = document.querySelector(".game__board");
     this.modeButtonNode = document.querySelector(".mode__btn");
-    this.minesCountNode = document.querySelector(".mines-count .count");
-    this.difficultyNode = document.querySelector(".diff");
-    this.difficultyBtnNodes = document.querySelectorAll("[data-difficulty]");
-    this.minesCountNode = document.querySelector(".mines-count__count");
-    this.restartNode = document.querySelector(".restart-screen");
+    this.minesCountNode = document.querySelector("[data-mines-count]");
+    this.difficultyNode = document.querySelector("[data-difficulty]");
+    this.difficultyBtnNodes = document.querySelectorAll("[data-difficulty-btn]");
+    this.restartNode = document.querySelector("[data-restart-screen]");
 		this.restartTextNode = this.restartNode.querySelector("[data-restart-text]")
     this.restartBtn = document.querySelector("[data-restart]");
-    this.lifeCountNode = document.querySelector("[data-life]");
+    this.lifeCountNode = document.querySelector("[data-life-count]");
     this.listenToModeSwitcher();
     this.listenToDifficultyBtns();
     this.listenToRestartBtn();
@@ -76,7 +75,7 @@ class Minesweeper {
   listenToDifficultyBtns() {
     this.difficultyBtnNodes.forEach((btn) => {
       btn.addEventListener("click", ({ target }) => {
-        this.difficulty = target.dataset.difficulty;
+        this.difficulty = target.dataset.difficultyBtn;
 
         this.development &&
           console.log(`[dev] Difficulty switched: ${this.difficulty}!`);
@@ -105,15 +104,19 @@ class Minesweeper {
     switch (this.difficulty) {
       case "easy":
         this.size = { rows: 8, cols: 6 };
+				this.startMinesCount = 8;
         break;
       case "normal":
         this.size = { rows: 10, cols: 8 };
+				this.startMinesCount = 14;
         break;
       case "hard":
         this.size = { rows: 12, cols: 10 };
+				this.startMinesCount = 20;
         break;
       default:
         this.size = { rows: 8, cols: 6 };
+				this.startMinesCount = 8;
     }
     this.nodeField.style.gridTemplateRows = `repeat(${this.size.rows}, 3rem)`;
     this.nodeField.style.gridTemplateColumns = `repeat(${this.size.cols}, 3rem)`;
@@ -135,7 +138,7 @@ class Minesweeper {
 
   generateVirtualField() {
     this.virtualField = new Array(this.size.rows * this.size.cols).fill(null);
-    this.placeMinesRandomly(this.size.rows + 4);
+    this.placeMinesRandomly(this.startMinesCount);
   }
 
   placeMinesRandomly(minesCount) {
@@ -208,7 +211,7 @@ class Minesweeper {
           this.sound.boom();
 
           if (this.life === 0) {
-            this.toggleRestartScreen("You exploded.");
+            this.toggleRestartScreen("You have exploded.");
 						this.sound.stopMusic();
             return;
           }
@@ -292,5 +295,5 @@ class Minesweeper {
   }
 }
 
-const game = new Minesweeper(true);
+const game = new Minesweeper();
 game.newGame();
